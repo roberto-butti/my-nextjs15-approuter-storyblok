@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Minimal template for Nextjs 15, App Router, and Storyblok
 
-## Getting Started
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) that integrates with Storyblok.
+This example aims to higlight the relevant things you need to setup/configure/implement in NextJS in order to integrate with Storyblok data and most important, enabling the Storyblok Visual Editor even if using the Server Components.
 
-First, run the development server:
+## Install the version 4 of Storyblok Ract SDK
+The version 4 supports the Server Components and the App Router.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```shell
+bun add @storyblok/react@4
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Starting the HTTPs server
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Starting the HTTP**S** server in order to use the localhost as preview URL.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+bun run dev --experimental-https
+```
 
-## Learn More
+## Set the Access Token
 
-To learn more about Next.js, take a look at the following resources:
+In `.env.local`
+```env
+NEXT_PUBLIC_STORYBLOK_TOKEN=your_token_here
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Set the storyblok.ts
+Set the `storyblok.ts` for initializing the Storyblok connection, check [src/lib/storyblok.ts](src/lib/storyblok.ts)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## The StoryblokProvider
+Implement the Storyblok provider. Check [src/components/StoryblokProvider.ts](src/components/StoryblokProvider.ts)
 
-## Deploy on Vercel
+- Using `use client` (because the Storyblok Provider is needed for initializing and using the Storyblok bridge on the client side)
+- in the stroyblok provider you should reinitialize the Stroyblok (for the storyblok bridge)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Add The StoryblokProvider in the layout.tsx
+Import and wrap the `<html />` tag with the `<StoryblokProvider />` one.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Define the catch all route
+
+- importing the `getStoryblokApi`
+- importing `StoryblokStory` from `@storyblok/react/rsc`
+- implementing the fetchData function (async)
+- fetching data (await)
+
+## Create the tsx component files for the Content type (Page.tsx)
+
+- importing storyblokEditable and StoryblokServerComponent from `@storyblok/react/rsc`
+- set the `{...storyblokEditable(blok)}` on the main tag
+- use `StoryblokServerComponent` for loading components
+
+```tsx
+import { storyblokEditable, StoryblokServerComponent } from '@storyblok/react/rsc';
+
+
+export default function Page({ blok }: any) {
+  return   <main {...storyblokEditable(blok)}>
+    {blok.body.map((nestedBlok: any) => (
+      <StoryblokServerComponent blok={nestedBlok} key={nestedBlok._uid} />
+    ))}
+  </main>
+}
+
+```
+
+## Create the tsx component files for the Storyblok Component (Teaser.tsx etc)
+
+- Import the `storyblokEditable`
+- Add `{...storyblokEditable(blok)}` to the root tag
+
+```tsx
+import { storyblokEditable } from '@storyblok/react/rsc';
+
+export default function Teaser({ blok }: any) {
+  return <div {...storyblokEditable(blok)}>
+    { blok.headline }
+  </div>;
+}
+```
