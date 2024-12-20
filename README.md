@@ -29,28 +29,30 @@ In `.env.local`
 NEXT_PUBLIC_STORYBLOK_TOKEN=your_token_here
 ```
 
-## Set the storyblok.ts
-Create the `storyblok.ts` to initialize the Storyblok connection, and check [src/lib/storyblok.ts](src/lib/storyblok.ts).
+## Set the `storyblok.ts` file
+Create the `storyblok.ts` file to initialize the Storyblok connection. You can check the file: [src/lib/storyblok.ts](src/lib/storyblok.ts).
 
 You can initialize the Storyblok object via the `storyblokInit` function, setting the access token and listing the components.
 
-## The StoryblokProvider
-Implement the Storyblok provider. The Storyblok Provider is needed to initialize and use the Storyblok bridge on the client side. Check [src/components/StoryblokProvider.ts](src/components/StoryblokProvider.ts)
+## The Storyblok Provider
+The Storyblok Provider is needed to initialize and use the Storyblok bridge on the client side. You can check the file: [src/components/StoryblokProvider.ts](src/components/StoryblokProvider.ts)
 
 - Using `use client` for initializing the Storyblok bridge on the client side.
 - In the Storyblok Provider, you should reinitialize the Storyblok object (to use the Storyblok Bridge).
 
-## Add The StoryblokProvider in the layout.tsx
-Import and wrap the `<html />` tag with the `<StoryblokProvider />` one.
+## Add the `StoryblokProvider` in the `src/app/layout.tsx` file
+Import and wrap the `<html />` tag with the `<StoryblokProvider />` one.  You can check the file: [src/app/layout.tsx](src/app/layout.tsx).
 
-## Define the catch-all route
+## Define the catch-all route file
 
 In the route `src/app/[slug]/page.tsx` file you need to:
 
 - Import the `getStoryblokApi`
 - Import `StoryblokStory` from `@storyblok/react/rsc`
 - Implement the `fetchData` function (async)
-- Fetch data (await)
+- Fetch data (await).
+
+You can check the file: [src/app/[slug]/page.tsx](src/app/[slug]/page.tsx).
 
 ## Create the `tsx` component files for the Content type (`Page.tsx`)
 
