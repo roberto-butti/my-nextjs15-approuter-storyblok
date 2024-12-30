@@ -14,6 +14,12 @@ export const getStoryblokApi = storyblokInit({
     grid: Grid,
     feature: Feature,
   },
+  apiOptions: {
+    cache: {
+      type: "none",
+    },
+  },
+
 
   enableFallbackComponent: true,
   customFallbackComponent: FallbackComponent,
